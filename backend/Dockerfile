@@ -15,11 +15,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
  && rm -rf /var/lib/apt/lists/*
 
 # Copy and install Python deps
-COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
+# When Railway builds from the repository root, the build context may be the repo root
+# so reference the backend/ path explicitly. This keeps the Dockerfile robust for
+# both local 'docker build ./backend' and remote builds that use the repo root context.
+COPY backend/requirements.txt ./
+# Ensure pip/setuptools/wheel are up-to-date to avoid build issues when
+# installing some binary wheels (numpy, mediapipe, etc.). Then install deps.
+RUN python -m pip install --upgrade pip setuptools wheel \
+ && pip install --no-cache-dir -r requirements.txt
 
-# Copy app code
-COPY . .
+# Copy only the backend application files into the image
+# Use backend/ as source because the Docker build context may point to the repo root.
+COPY backend/ .
 
 ENV PORT 8000
 EXPOSE 8000
