@@ -18,7 +18,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # When Railway builds from the repository root, the build context may be the repo root
 # so reference the backend/ path explicitly. This keeps the Dockerfile robust for
 # both local 'docker build ./backend' and remote builds that use the repo root context.
-COPY backend/requirements.txt ./
+# When Railway builds from the `backend` directory as root, the requirements
+# file is available at ./requirements.txt. Use relative paths so the Dockerfile
+# works whether the build context is the repo root or the backend folder.
+COPY requirements.txt ./
 # Ensure pip/setuptools/wheel are up-to-date to avoid build issues when
 # installing some binary wheels (numpy, mediapipe, etc.). Then install deps.
 RUN python -m pip install --upgrade pip setuptools wheel \
@@ -26,7 +29,7 @@ RUN python -m pip install --upgrade pip setuptools wheel \
 
 # Copy only the backend application files into the image
 # Use backend/ as source because the Docker build context may point to the repo root.
-COPY backend/ .
+COPY . .
 
 ENV PORT 8000
 EXPOSE 8000
