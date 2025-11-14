@@ -1,0 +1,16 @@
+# Ignore frontend build artifacts and editor configs to shrink Docker build context
+frontend/
+node_modules/
+.git/
+.vscode/
+.idea/
+.DS_Store
+*.log
+venv/
+.venv/
+__pycache__/
+*.pyc
+dist/
+build/
+*.egg-info/
+README.md
