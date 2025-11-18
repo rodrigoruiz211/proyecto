@@ -1,3 +1,43 @@
+FROM python:3.10-slim
+
+# Install system deps required by mediapipe / opencv
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    cmake \
+    pkg-config \
+    git \
+    wget \
+    curl \
+    ca-certificates \
+    libglib2.0-0 \
+    libsm6 \
+    libxrender1 \
+    libxext6 \
+    libjpeg-dev \
+    libpng-dev \
+    libavcodec-dev \
+    libavformat-dev \
+    libswscale-dev \
+    libprotobuf-dev \
+    protobuf-compiler \
+    ffmpeg \
+ && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy only requirements first for layer caching
+COPY backend/requirements.txt /app/backend/requirements.txt
+
+RUN pip install --upgrade pip setuptools wheel
+# Install Python dependencies
+RUN pip install --no-cache-dir -r /app/backend/requirements.txt
+
+# Copy app
+COPY backend /app/backend
+
+EXPOSE 8000
+
+CMD ["uvicorn", "backend.app:app", "--host", "0.0.0.0", "--port", "8000"]
 # Minimal Dockerfile for FastAPI backend
 FROM python:3.11-slim
 
