@@ -1,4 +1,8 @@
-fastapi==0.95.0
+fastapi>=0.95.0
+uvicorn[standard]>=0.22.0
+mediapipe>=0.10.0
+opencv-python-headless>=4.7.0
+numpy>=1.24.0fastapi==0.95.0
 uvicorn[standard]==0.22.0
 # Use the headless build of OpenCV to avoid GUI/X11 deps in container
 opencv-python-headless==4.7.0.72
