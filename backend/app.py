@@ -1,4 +1,5 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import numpy as np
 import cv2
@@ -6,6 +7,15 @@ import mediapipe as mp
 import io
 
 app = FastAPI(title="Ocular - Vision API")
+
+# Allow CORS for requests from the frontend web build (adjust origins for production)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Initialize MediaPipe utilities
 mp_drawing = mp.solutions.drawing_utils
